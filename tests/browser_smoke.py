@@ -15,11 +15,12 @@ def offline_html():
     html=re.sub(r'<link rel="stylesheet"[^>]+>',lambda _: '<style>'+(ROOT/'styles.css').read_text()+'</style>',html)
     return re.sub(r'<script type="module"[^>]+></script>',lambda _: '<script type="importmap">'+json.dumps({'imports':imports})+'</script><script type="module">import "lc/src/main.js";</script>',html)
 def run():
-    a=argparse.ArgumentParser();a.add_argument('--offline',action='store_true');a.add_argument('--url',default='http://localhost:8080/');a.add_argument('--output',default='test-results');args=a.parse_args()
+    a=argparse.ArgumentParser();a.add_argument('--offline',action='store_true');a.add_argument('--url',default='http://localhost:8080/');a.add_argument('--output',default='test-results');a.add_argument('--viewport',choices=['all','desktop','mobile'],default='all');args=a.parse_args()
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True);results=[]
     with sync_playwright() as p:
         browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
         for name,w,h,touch in [('desktop',1280,900,False),('mobile',390,844,True)]:
+            if args.viewport != 'all' and args.viewport != name: continue
             page=browser.new_page(viewport={'width':w,'height':h},has_touch=touch,device_scale_factor=1);errors=[]
             page.on('pageerror',lambda e:errors.append(str(e)))
             if args.offline:
@@ -52,6 +53,6 @@ def run():
             results.append({'viewport':name,'size':[w,h],'passed':True,'javascript_errors':errors,'renderer':page.evaluate('__qa.scene.g.mode'),'checks':['menu','missions','recruit','pointer/touch','pause','ability','artifact-freeze','artifact-choice','ten-boss-models','endless','shop','single-clock']})
             page.close()
         browser.close()
-    report={'mode':'offline-import-map' if args.offline else 'HTTP','results':results}
+    report={'mode':'offline-import-map','results':results} if args.offline else {'mode':'HTTP','results':results}
     (out/'browser-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps(report,ensure_ascii=False))
 if __name__=='__main__':run()
