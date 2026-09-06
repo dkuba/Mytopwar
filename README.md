@@ -1,61 +1,63 @@
-# Last Column
+# Last Column 2 — Штурмовая колонна
 
-A dependency-free browser horde-shooter prototype. A small squad grows through reinforcement and artifact choices while fighting increasingly varied enemies and bosses.
+**Играть:** https://dkuba.github.io/Mytopwar/
 
-## Run locally
+Самостоятельный браузерный crowd shooter с оригинальными процедурными моделями.
+Собирай армию на трассе, освобождай бойцов, обходи ловушки и побеждай боссов.
+Чужие модели, текстуры, логотипы и звук Top War не используются.
 
-Serve the repository over HTTP (native JavaScript modules are used):
+## Версия 2.0
+
+- Объёмные игрушечные солдаты, оружие, мост, вода, пальмы, четыре окружения.
+- Живой добор: +N, ×2, специалисты, улучшение оружия и временный форсаж.
+- Простреливаемые клетки и ящики: сначала уменьши прочность, затем подбери отряд.
+- Отрицательные ворота −N/÷2; мины, шипы, движущиеся пилы и пульсирующие лазеры.
+- 12 миссий, 10 архетипов боссов, 12 классов бойцов, 14 типов противников.
+- 24 артефакта, три командира, выживание, арсенал за заработанные кредиты.
+- Русский интерфейс, мышь/клавиатура/касание, перенос старого локального сохранения.
+
+Ворота выбираются по белому маркеру центра отряда; один эффект на ряд.
+Физические ловушки проверяют позиции бойцов, а не наносят глобальный урон при
+промахе. Лимит армии — 120. Рекрутирование и бой идут одновременно.
+
+## Управление
+
+Перетаскивай мышь или палец; также работают удерживаемые A/D и стрелки.
+Стрельба автоматическая. Пробел/кнопка справа — способность, Esc — пауза.
+Нота включает звук, HD/SD меняет качество. При уходе со вкладки бой останавливается.
+
+## Запуск
 
 ```bash
 python3 -m http.server 8080
+# открыть http://localhost:8080/
 ```
 
-Open `http://localhost:8080`.
-
-## Deploy on Vercel
-
-Import `dkuba/Mytopwar`, branch `main`, with the repository root as Root Directory.
-The committed `vercel.json` sets the framework to **Other**, runs `npm run build`,
-and serves **dist**. No environment variables or external runtime services are required.
+GitHub Pages: `main` → `/ (root)`. Никаких зависимостей, внешних CDN или ключей.
+Все браузерные пути относительные; `vercel.json` оставлен как запасная конфигурация.
 
 ```bash
 npm run check
 npm run build
+npm run test:campaign
+FULL_CAMPAIGN=1 npm run test:campaign
 ```
 
-The build runs the content/runtime-import checks and copies only `index.html`,
-`styles.css` and `src/` into `dist/`. Tests, documentation and repository metadata
-are not included in the deployment output. Node.js 22 is declared in package.json.
+Симуляция использует мировые координаты и фиксированный шаг 1/60 с. Рендерер
+использует WebGL2 instancing; при недоступном WebGL автоматически включается
+программная объёмная проекция той же сцены. На слабом устройстве используйте SD.
 
-## Controls
+## Проверка и ограничения
 
-- `A / D` or `Left / Right`: move the squad laterally.
-- Mouse/touch drag: direct the squad.
-- `Space`: Rally ability.
-- `Esc`: pause.
+43 теста и сборка прошли. Кампания пройдена тестовым игроком 36/36 раз
+(12 миссий × три seed), без изменения здоровья или выдачи нештатных наград.
+Браузерные сценарии desktop 1280×900 и touch 390×844 прошли без JavaScript-ошибок.
 
-## Current prototype
+В проверочном Chromium HTTP-навигация и WebGL недоступны: браузерные сценарии
+выполнялись на тех же локальных модулях через import map и **software3d fallback**.
+Это не квалификация аппаратного WebGL, физических телефонов или хостинга.
+Подробности: [отчёт](docs/PUBLISH_VERIFICATION.md), [план](docs/REFRACTOR_PLAN.md).
 
-- Real-time automatic fire, visible recruits and casualties.
-- 12 troop archetypes, 14 enemy archetypes and 24 artifact definitions.
-- Reinforcement, rescue, weapon-team and artifact choices between encounters.
-- 12 campaign levels, four battlefield palettes and 10 boss archetypes.
-- Endless mode, Rally, local campaign progress, credits and best-wave tracking.
-- Responsive Canvas 2D rendering and procedural audio without external assets.
-
-This is not the complete scope of the earlier game-design plan. Reward crates
-and rescues currently use choice cards; shootable on-field loot containers,
-physical recruitment gates, branching routes, selectable commanders and a
-permanent-upgrade shop are not implemented. Credits are recorded but cannot yet
-be spent. Biomes currently differ by palette rather than unique environment assets.
-
-## Verification scope
-
-`npm run check` validates content references/counts and imports the game runtime,
-so engine syntax errors fail the check. Browser startup was additionally smoke-tested
-with local assets in desktop and mobile viewports: campaign start, pause/resume,
-Rally and endless start passed without JavaScript exceptions. This smoke test does
-not prove complete campaign balance, long-running stability, real-device support
-or a successful Vercel deployment. See `docs/PUBLISH_VERIFICATION.md`.
-
-See `docs/IMPLEMENTATION_PLAN.md` for the gameplay iteration outline.
+Прогресс хранится только в текущем браузере; при запрете хранилища игра работает,
+но изменения не сохраняются. Нет multiplayer, облачной синхронизации, реальных
+покупок, MMO-базы или полного копирования всех механик коммерческой Top War.

@@ -1,0 +1,15 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {Random,formation,gateCount,LIMITS,inside,Grid} from '../src/sim/rules.js';
+import {loadSave,persistSave,normalizeSave,purchase} from '../src/systems/storage.js';
+import {camera,multiply} from '../src/render/gl.js';
+test('seeded random sequence is reproducible',()=>{const a=new Random(33),b=new Random(33);for(let i=0;i<100;i++)assert.equal(a.next(),b.next());});
+test('formation stays on road for all counts and lateral limits',()=>{for(let n=1;n<=120;n++)for(const x of [-3.5,0,3.5])for(let i=0;i<n;i++)assert.ok(Math.abs(formation(i,n,x).x)<LIMITS.halfRoad-.25);});
+test('arithmetic gates clamp to capacity and zero',()=>{assert.equal(gateCount(4,'add',6),10);assert.equal(gateCount(100,'multiply',3),120);assert.equal(gateCount(4,'subtract',9),0);assert.equal(gateCount(7,'divide',2),3);});
+test('area shapes distinguish hit and miss',()=>{assert.ok(inside({x:0,z:0},{x:0,z:0,radius:1}));assert.ok(!inside({x:4,z:0},{x:0,z:0,radius:1}));assert.ok(inside({x:1,z:0},{shape:'rect',x:0,z:0,width:3,depth:1}));});
+test('grid excludes dead and hidden',()=>{const g=new Grid();g.rebuild([{x:0,z:0,hp:1},{x:0,z:0,hp:0},{x:0,z:0,hp:1,hidden:true}]);assert.equal(g.near(0,0,1).length,1);});
+test('legacy progress migrates without losing credits',()=>{const s=loadSave({getItem:k=>k==='last-column-meta'?JSON.stringify({highestLevel:7,credits:401}):null});assert.equal(s.version,2);assert.equal(s.highestLevel,7);assert.equal(s.credits,401);});
+test('blocked corrupt and null storage are safe',()=>{assert.equal(loadSave(null).highestLevel,1);assert.equal(loadSave({getItem:()=>'{'}).credits,0);assert.equal(persistSave(null,normalizeSave()),false);assert.equal(normalizeSave(null).credits,0);});
+test('shop cannot overspend or exceed cap',()=>{const s=normalizeSave({credits:200});assert.ok(purchase(s,'training'));assert.equal(s.credits,50);assert.ok(!purchase(s,'training'));assert.ok(!purchase(s,'other'));s.training=3;s.credits=9999;assert.ok(!purchase(s,'training'));});
+test('camera projection finite in portrait and landscape',()=>{for(const a of [.4,.46,.8,1,1.6,2.2])assert.ok([...camera(a)].every(Number.isFinite));});
+test('matrix identity multiplication',()=>{const i=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),c=camera(.46);assert.deepEqual([...multiply(c,i)],[...c]);});
+test('world positive x projects right',()=>{const m=camera(.46);assert.ok(m[0]/m[15]>0);});

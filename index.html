@@ -1,80 +1,8 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#07111f" />
-  <title>Last Column</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-  <div id="app">
-    <canvas id="game" aria-label="Last Column battlefield"></canvas>
-    <div id="hud" class="hud hidden">
-      <div class="hud-left">
-        <div class="pill"><span>LEVEL</span><strong id="hud-level">1</strong></div>
-        <div class="pill"><span>ARMY</span><strong id="hud-army">0</strong></div>
-        <div class="pill"><span>KILLS</span><strong id="hud-kills">0</strong></div>
-      </div>
-      <div class="hud-center">
-        <div id="wave-label" class="wave-label"></div>
-        <div class="progress"><i id="level-progress"></i></div>
-      </div>
-      <div class="hud-right">
-        <button id="ability" class="ability"><span id="ability-name">RALLY</span><small id="ability-cooldown">READY</small></button>
-        <button id="pause" class="icon-btn" aria-label="Pause">Ⅱ</button>
-      </div>
-    </div>
-
-    <section id="menu" class="screen visible">
-      <div class="panel hero-panel">
-        <div class="eyebrow">REAL-TIME HORDE SHOOTER</div>
-        <h1>LAST <em>COLUMN</em></h1>
-        <p>Build a tiny squad into a war machine, break reward crates, rescue troops, stack artifacts and survive increasingly complex bosses.</p>
-        <div class="menu-actions">
-          <button id="play" class="primary">START CAMPAIGN</button>
-          <button id="endless" class="secondary">ENDLESS MODE</button>
-        </div>
-        <div class="stats-grid">
-          <div><span>Highest level</span><strong id="meta-level">1</strong></div>
-          <div><span>Credits</span><strong id="meta-credits">0</strong></div>
-          <div><span>Best wave</span><strong id="meta-wave">0</strong></div>
-        </div>
-        <div class="controls">Move: <b>A / D</b>, <b>← / →</b> or drag • Ability: <b>Space</b> • Pause: <b>Esc</b></div>
-      </div>
-    </section>
-
-    <section id="choice" class="screen">
-      <div class="panel choice-panel">
-        <div class="eyebrow" id="choice-kicker">CHOOSE</div>
-        <h2 id="choice-title">Pick your upgrade</h2>
-        <div id="choice-cards" class="choice-cards"></div>
-      </div>
-    </section>
-
-    <section id="result" class="screen">
-      <div class="panel result-panel">
-        <div class="eyebrow" id="result-kicker">MISSION COMPLETE</div>
-        <h2 id="result-title">Victory</h2>
-        <p id="result-text"></p>
-        <div id="result-stats" class="result-stats"></div>
-        <div class="menu-actions">
-          <button id="next" class="primary">NEXT LEVEL</button>
-          <button id="restart" class="secondary">RETRY</button>
-          <button id="home" class="ghost">MAIN MENU</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="pause-screen" class="screen">
-      <div class="panel compact-panel">
-        <div class="eyebrow">PAUSED</div>
-        <h2>Mission paused</h2>
-        <button id="resume" class="primary">RESUME</button>
-        <button id="pause-home" class="ghost">MAIN MENU</button>
-      </div>
-    </section>
-  </div>
-  <script type="module" src="./src/main.js"></script>
-</body>
-</html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#79cbdc"><meta name="description" content="Last Column — браузерный 3D crowd shooter: собирай армию, обходи ловушки, сражайся с боссами."><title>Last Column — Штурмовая колонна</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='16' width='64' height='64' fill='%232a96d6'/%3E%3Cpath d='M16 44h32V29a16 16 0 00-32 0z' fill='%23fff0a2'/%3E%3C/svg%3E"><link rel="stylesheet" href="./styles.css?v=2.0.0"></head><body>
+<canvas id="game" aria-label="Объёмное поле боя"></canvas><canvas id="overlay" aria-hidden="true"></canvas>
+<header id="brand"><span class="brand-mark">LC</span><div>LAST COLUMN<small>ШТУРМОВАЯ КОЛОННА</small></div><span class="version">2.0</span></header>
+<nav class="settings"><button id="sound" aria-label="Переключить звук">♪</button><button id="quality" aria-label="Качество графики">HD</button></nav>
+<section id="lobby"><div class="lobby-card"><span class="eyebrow">● ОПЕРАЦИЯ «СИНИЙ ПРИЛИВ»</span><h1>Маленький отряд.<br><em>Большая армия.</em></h1><p class="intro">Веди колонну через ворота усиления.<br>Разбивай клетки. Обходи ловушки.<br>Пусть орда узнает, кто здесь главный.</p><div class="commander-label">ВЫБЕРИ КОМАНДИРА</div><div id="commanders" class="commanders"></div><button id="play" class="primary play"><span>В БОЙ</span><small id="play-level">МИССИЯ 01 →</small></button><div class="menu-row"><button id="missions">12 миссий</button><button id="endless">∞ Выживание</button><button id="shop">Арсенал</button></div><div class="save-bar"><span>◈ <b id="credits">0</b></span><span>Пройдено <b id="completed">0</b> / 12</span><small id="storage-status">Прогресс сохранён</small></div><small class="instructions">Мышь / палец / A D — движение. Пробел — способность.<br>Ворота выбираются по белому маркеру перед отрядом.</small></div><div class="lobby-caption"><small>ОРИГИНАЛЬНАЯ ПРОЦЕДУРНАЯ ГРАФИКА</small><strong>ТВОЯ КОЛОННА.<br>ТВОИ ПРАВИЛА.</strong></div></section>
+<div id="hud" hidden><div class="hud-row"><div class="mission-pill"><small id="mission-label"></small><strong id="mission-name"></strong></div><div class="counter"><small>БОЙЦЫ</small><strong id="army-count">4</strong><span>/120</span></div><div class="counter"><small>ПОБЕЖДЕНО</small><strong id="kill-count">0</strong></div><button id="pause" aria-label="Пауза">Ⅱ</button></div><div class="progress"><i id="progress"></i></div><div id="boss-hud" hidden><div><strong id="boss-name"></strong><span id="boss-phase"></span></div><div class="boss-meter"><i id="boss-life"></i></div></div><div id="notice" role="status"></div><div class="bottom-hud"><div class="steering-help"><strong>↔</strong><span>Веди отряд<small id="build-tags"></small></span></div><button id="ability"><b id="ability-icon">⚑</b><span id="ability-name">Форсаж</span><small id="ability-cd">ПРОБЕЛ • ГОТОВО</small></button></div></div>
+<section id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"><span id="modal-eyebrow" class="eyebrow"></span><h2 id="modal-title"></h2><div id="modal-content"></div><div id="modal-actions"></div></div></section>
+<div id="fatal" hidden><h2>Не удалось запустить графику</h2><p id="fatal-message"></p><button onclick="location.reload()">Повторить</button></div><script type="module" src="./src/main.js?v=2.0.0"></script></body></html>

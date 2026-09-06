@@ -1,32 +1,34 @@
-# Publication verification
+# Проверка Last Column 2.0
 
-## Changes made before publishing
+- `npm run check`: 43 passed, 0 failed; syntax/content validation passed.
+- `npm run build`: passed; dist содержит только браузерные ресурсы.
+- Кампания: 36/36 victories — 12 миссий × seed 11, 73, 509.
+- Chromium desktop 1280×900 и touch 390×844: по 12 сценариев, 0 JS exceptions.
+- Данные: `qualification.json`. Повторение: `npm run test:campaign`;
+  `FULL_CAMPAIGN=1 npm run test:campaign` включает все три seed.
 
-- Fixed a missing closing brace in `Game.makeEndlessLevel` that prevented the game module from parsing.
-- Added a game-runtime import to the content checks so the same syntax regression is caught.
-- Added an explicit static build, Vercel configuration and repository ignore rules.
-- Kept the existing gameplay scope; this publication pass is not a completion of the entire design plan.
+Бот использует только штатные движение, способность и выбор артефакта. Не меняет
+здоровье, не выдаёт бессмертие и не добавляет войска напрямую. Это проверка
+достижимости кампании, а не доказательство идеального человеческого баланса.
 
-## Checks performed
+Browser smoke: меню, миссии, живой добор, мышь/касание, пауза, способность,
+заморозка и выбор артефактов, все 10 моделей боссов, выживание, арсенал,
+единственный simulation clock после повторных запусков.
 
-- `node --check` on every JavaScript module in src, tests and scripts: passed.
-- `npm run check`: passed (12 troops, 14 enemies, 24 artifacts, 12 levels, 10 boss archetypes).
-- `npm run build`: passed; output contains only browser assets.
-- Offline Chromium smoke: 1280x800 desktop and 390x844 mobile viewports.
-- Campaign start, pause/resume, Rally and endless start passed in both viewports with zero JavaScript exceptions.
+## Ограничения
 
-## Boundaries
+Проверочный Chromium блокирует HTTP-навигацию и WebGL-контексты. Использован
+`python tests/browser_smoke.py --offline`: те же модули встроены через import map,
+меняются только относительные спецификаторы импортов. Симуляция не подменена.
+Работал штатный **software3d**. Это НЕ проверка аппаратного WebGL2, хостинга,
+физических iPhone/Android, часовых игровых сессий или производительности GPU.
 
-The browser environment blocked navigation to the local HTTP server. The smoke test
-therefore embedded the same local assets using module data URLs, with no external
-requests. It does not qualify HTTP hosting, localStorage persistence, real mobile
-devices, complete levels, long sessions or Vercel itself. No deployed-site URL has
-been verified in this publication pass.
+Обычная проверка при доступном HTTP:
 
-## Gameplay limitations
+```bash
+python3 -m http.server 8080
+# в другой консоли; нужны Python playwright и установленный Chromium:
+python tests/browser_smoke.py --url http://localhost:8080/
+```
 
-Physical gates, shootable reward containers, environment-specific geometry,
-commander selection and a spendable meta-progression system from the design plan
-are not implemented. Current reward choices are modal cards; credits are counters.
-The iteration document describes the prototype's layers, not independently
-recorded proof that every original planned feature was completed.
+main read-back и Pages-публикация проверяются отдельно после записи в GitHub.

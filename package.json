@@ -1,13 +1,1 @@
-{
-  "name": "last-column",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "check": "node tests/verify.mjs",
-    "build": "npm run check && node scripts/build.mjs"
-  },
-  "engines": {
-    "node": "22.x"
-  }
-}
+{"name":"last-column","version":"2.0.0","private":true,"type":"module","scripts":{"check":"node tests/verify.mjs && node --test tests/*.test.mjs","test":"node --test tests/*.test.mjs","build":"npm run check && node scripts/build.mjs","test:campaign":"node tests/campaign.mjs"},"engines":{"node":">=20"}}

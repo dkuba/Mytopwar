@@ -1,0 +1,4 @@
+import {Simulation}from'../src/sim/simulation.js';import{drive}from'./bot.mjs';import{writeFile}from'node:fs/promises';
+const seeds=process.env.SEED?[+process.env.SEED]:process.env.FULL_CAMPAIGN?[11,73,509]:[73],reports=[];
+for(const seed of seeds)for(let level=1;level<=12;level++){const s=new Simulation({level,seed,commander:'captain'});let peak=4,peakEnemies=0,ticks=0;while(['running','choice'].includes(s.phase)&&ticks++<240*60){drive(s);s.step();peak=Math.max(peak,s.units.length);peakEnemies=Math.max(peakEnemies,s.enemies.length);}const r={level,seed,outcome:s.phase,seconds:+s.time.toFixed(1),survivors:s.units.length,peakArmy:peak,peakEnemies,kills:s.stats.kills,gates:s.stats.gates,rescued:s.stats.rescued,trapLoss:s.stats.trapLoss};reports.push(r);console.log(JSON.stringify(r));}
+await writeFile(`test-results-campaign-${process.env.SEED||'all'}.json`,JSON.stringify(reports,null,2)+'\n');if(reports.some(r=>r.outcome!=='victory'))process.exitCode=1;
