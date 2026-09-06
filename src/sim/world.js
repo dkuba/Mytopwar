@@ -15,6 +15,8 @@ export function spawnObject(s, kind, lane, options={}) {
 }
 export function updateObjects(s,dt) {
   for (const o of s.objects) {
+    // A terminal loss cannot be undone for free by the next object in this row.
+    if (!s.units.length) break;
     const previousZ=o.z; o.z-=s.speed*dt; o.age+=dt;
     if(o.kind==='saw') o.x=clamp(o.baseX+Math.sin(o.age*1.2)*1.7,-4.9,4.9);
     if(o.kind==='gate' && previousZ>0 && o.z<=0 && !s.claimed.has(o.row) && Math.abs(s.x-o.x)<o.width/2) {
@@ -30,8 +32,9 @@ export function updateObjects(s,dt) {
       o.active=active;
       const shape=o.kind==='laser'?{shape:'rect',x:o.x,z:o.z,width:2.5,depth:.35}:{x:o.x,z:o.z,radius:o.kind==='saw'?.8:.7};
       if(active && (o.quota ?? 5)>o.hit.size) {
+        const hadLastStand=s.lastStandUsed;
         const lost=damageArea(s,shape,0,(o.quota??5)-o.hit.size,o.hit);
-        if(lost) {s.notice(`ЛОВУШКА: −${lost}`);s.sound('hurt');if(o.kind==='mine'){o.dead=true;s.effect({kind:'blast',x:o.x,z:o.z,radius:1.2,ttl:.45,color:'#ffa543'});}}
+        if(lost) {if(s.lastStandUsed===hadLastStand)s.notice(`ЛОВУШКА: −${lost}`);s.sound('hurt');if(o.kind==='mine'){o.dead=true;s.effect({kind:'blast',x:o.x,z:o.z,radius:1.2,ttl:.45,color:'#ffa543'});}}
       }
     }
     if(o.z< -7) o.dead=true;

@@ -195,7 +195,6 @@ export class Simulation {
     this.graveyard=this.graveyard.slice(-120);this.enemies=this.enemies.filter(e=>!e.dead);
     for(const p of this.parts)if(p.hp<=0&&!p.dead){p.dead=true;const b=this.bosses.find(b=>b.id===p.parent);if(b)b.hp=Math.max(0,b.hp-b.maxHp*.1);this.notice('ОРУДИЕ УНИЧТОЖЕНО');this.blast(p.x,p.z,1,0);}this.parts=this.parts.filter(isAlive);
     for(const b of this.bosses)if(b.hp<=0&&!b.dead){b.dead=true;this.stats.bosses++;this.blast(b.x,b.z,3,0);this.parts=this.parts.filter(p=>p.parent!==b.id);}this.bosses=this.bosses.filter(isAlive);
-    const before=this.units.length;removeTroops(this,this.units.filter(u=>u.hp<=0).map(u=>u.id));
-    if(!this.units.length&&this.mods.laststand&&!this.lastStandUsed&&before){this.lastStandUsed=true;recruit(this,'rifleman',Math.max(1,Math.ceil(before*.25)));this.shieldUntil=this.time+3;this.notice('ВТОРОЙ ШАНС');}
+    removeTroops(this,this.units.filter(u=>u.hp<=0).map(u=>u.id));
   }
 }

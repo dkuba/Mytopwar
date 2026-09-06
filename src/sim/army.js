@@ -21,10 +21,18 @@ export function removeTroops(s, ids, reason = 'combat') {
   s.fallen.push(...fallen.map(u => u.type));
   s.fallen = s.fallen.slice(-120);
   for (const u of fallen.slice(0,12)) s.effect({kind:'pop',x:u.x,z:u.z,color:'#ef6570',text:'−1',ttl:.8});
+  // One lethal-loss policy for combat, arithmetic gates and physical traps.
+  // Recovery is paid by the artifact, never by a later pickup in the same tick.
+  if (!s.units.length && s.mods.laststand && !s.lastStandUsed) {
+    s.lastStandUsed = true;
+    recruit(s, 'rifleman', Math.max(1, Math.ceil(fallen.length * .25)));
+    s.shieldUntil = s.time + 3;
+    s.notice('ВТОРОЙ ШАНС');
+  }
   return fallen.length;
 }
 export function applyGate(s, o) {
-  const before = s.units.length;
+  const before = s.units.length, hadLastStand = s.lastStandUsed;
   if (o.op === 'tier') { s.tier = Math.min(3,s.tier + 1); s.notice(`ОРУЖИЕ • УРОВЕНЬ ${s.tier}`); return; }
   if (o.op === 'buff') { s.buffUntil = s.time + 10; s.notice('ФОРСАЖ • 10 СЕКУНД'); return; }
   const value = o.op === 'add' ? Math.round(o.value * s.mods.recruit) : o.value;
@@ -36,7 +44,7 @@ export function applyGate(s, o) {
     for (let i=0;i<after-before;i++) {const source=originals[i%originals.length]; recruit(s,source.type,1,source);}
   } else recruit(s,o.unit || 'rifleman',after-before);
   const delta = s.units.length-before;
-  s.notice(delta ? `${delta>0?'+':''}${delta} БОЙЦОВ` : 'МАКСИМУМ 120');
+  if (s.lastStandUsed === hadLastStand) s.notice(delta ? `${delta>0?'+':''}${delta} БОЙЦОВ` : 'МАКСИМУМ 120');
   s.sound(delta<0?'hurt':'pickup');
 }
 export function damageArea(s, shape, amount, lethalQuota = 0, alreadyHit = null) {
