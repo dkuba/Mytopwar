@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <title>Last Column</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Last Column battlefield"></canvas>
+    <div id="hud" class="hud hidden">
+      <div class="hud-left">
+        <div class="pill"><span>LEVEL</span><strong id="hud-level">1</strong></div>
+        <div class="pill"><span>ARMY</span><strong id="hud-army">0</strong></div>
+        <div class="pill"><span>KILLS</span><strong id="hud-kills">0</strong></div>
+      </div>
+      <div class="hud-center">
+        <div id="wave-label" class="wave-label"></div>
+        <div class="progress"><i id="level-progress"></i></div>
+      </div>
+      <div class="hud-right">
+        <button id="ability" class="ability"><span id="ability-name">RALLY</span><small id="ability-cooldown">READY</small></button>
+        <button id="pause" class="icon-btn" aria-label="Pause">Ⅱ</button>
+      </div>
+    </div>
+
+    <section id="menu" class="screen visible">
+      <div class="panel hero-panel">
+        <div class="eyebrow">REAL-TIME HORDE SHOOTER</div>
+        <h1>LAST <em>COLUMN</em></h1>
+        <p>Build a tiny squad into a war machine, break reward crates, rescue troops, stack artifacts and survive increasingly complex bosses.</p>
+        <div class="menu-actions">
+          <button id="play" class="primary">START CAMPAIGN</button>
+          <button id="endless" class="secondary">ENDLESS MODE</button>
+        </div>
+        <div class="stats-grid">
+          <div><span>Highest level</span><strong id="meta-level">1</strong></div>
+          <div><span>Credits</span><strong id="meta-credits">0</strong></div>
+          <div><span>Best wave</span><strong id="meta-wave">0</strong></div>
+        </div>
+        <div class="controls">Move: <b>A / D</b>, <b>← / →</b> or drag • Ability: <b>Space</b> • Pause: <b>Esc</b></div>
+      </div>
+    </section>
+
+    <section id="choice" class="screen">
+      <div class="panel choice-panel">
+        <div class="eyebrow" id="choice-kicker">CHOOSE</div>
+        <h2 id="choice-title">Pick your upgrade</h2>
+        <div id="choice-cards" class="choice-cards"></div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="panel result-panel">
+        <div class="eyebrow" id="result-kicker">MISSION COMPLETE</div>
+        <h2 id="result-title">Victory</h2>
+        <p id="result-text"></p>
+        <div id="result-stats" class="result-stats"></div>
+        <div class="menu-actions">
+          <button id="next" class="primary">NEXT LEVEL</button>
+          <button id="restart" class="secondary">RETRY</button>
+          <button id="home" class="ghost">MAIN MENU</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="pause-screen" class="screen">
+      <div class="panel compact-panel">
+        <div class="eyebrow">PAUSED</div>
+        <h2>Mission paused</h2>
+        <button id="resume" class="primary">RESUME</button>
+        <button id="pause-home" class="ghost">MAIN MENU</button>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

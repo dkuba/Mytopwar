@@ -1,0 +1,13 @@
+{
+  "name": "last-column",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node tests/verify.mjs",
+    "build": "npm run check && node scripts/build.mjs"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
