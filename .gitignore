@@ -6,6 +6,5 @@ dist/
 .DS_Store
 __pycache__/
 test-results/
-
-test-results/
 test-results-campaign-*.json
+test-results-campaign-*.json.tmp
